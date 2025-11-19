@@ -1,37 +1,48 @@
-# Video and Audio Downloader
+<h1 align="center">video-downloader</h1>
 
-A desktop application for downloading video and audio from various web sources, built with Python and yt-dlp.
+A secure, feature-rich CLI tool to download video and audio from various web sources, built with Python and yt-dlp.
 
 ## Description
 
-This application allows users to specify a URL, choose between video (MP4) and audio (MP3) formats, and select a destination folder for the downloaded files. The backend leverages the powerful `yt-dlp` library, ensuring compatibility with a wide range of websites.
+This command-line application allows you to download video and audio from a given URL with multiple authentication methods, robust error handling, and enhanced security. Choose between MP4 video or MP3 audio formats, specify output quality, and authenticate using username/password, stored credentials, or cookies.
 
-The application is designed to be straightforward and efficient, featuring a responsive interface that remains active during the download process by utilising multithreading.
+The tool is powered by `yt-dlp` and features real-time progress tracking, comprehensive logging, and automatic dependency verification.
 
 ## Features
 
--   **Modern GUI:** A clean and user-friendly interface built with the `customtkinter` library, which supports system appearance themes (light/dark).
--   **Video and Audio Formats:** Option to download content as either an MP4 video file or an MP3 audio file.
--   **Asynchronous Downloads:** Downloads are handled in a separate thread to prevent the UI from freezing.
--   **Download Progress:** A progress bar and status labels provide real-time feedback on the download status.
--   **Custom Download Location:** Users can specify a directory where the files will be saved.
--   **Cookie Support:** Option to use a browser cookies file to download content from websites that require a login (e.g., TikTok, Vimeo).
+### Core Functionality
+-   **Simple CLI:** Clean and intuitive command-line interface with helpful error messages
+-   **Multiple Formats:** Download as MP4 video or MP3 audio with configurable quality
+-   **Real-Time Progress:** Rich progress bars with accurate download tracking
+-   **Custom Download Location:** Specify any directory for your downloads
+-   **Automatic Dependency Check:** Verifies ffmpeg installation before download
+
+### Authentication & Security
+-   **🆕 Cookie-Free Authentication:** Username/password support without browser cookies
+-   **🆕 Credential Storage:** Securely store site credentials in `~/.config/video-downloader/`
+-   **🆕 Environment Variables:** Support for `VIDEO_DOWNLOADER_<SITE>_USERNAME/PASSWORD`
+-   **🆕 SSL Verification:** Enabled by default for secure connections
+-   **Cookie Fallback:** Optional browser cookies support for compatibility
+
+### Reliability & Error Handling
+-   **🆕 Retry Logic:** Automatic retry with configurable attempts (default: 3)
+-   **🆕 Timeout Control:** Configurable socket timeout to prevent hangs
+-   **🆕 Specific Error Messages:** Clear categorization of network, format, and dependency errors
+-   **🆕 Verbose Logging:** Debug mode with detailed execution traces
 
 ## Prerequisites
 
-Before running the application, ensure you have the following installed:
-
--   Python 3.x
--   `ffmpeg`: This is a required dependency for `yt-dlp` to process and convert video and audio files. It must be installed and available in your system's PATH (especially on windows).
+-   Python 3.8+
+-   `pipx` (recommended for installation)
+-   `ffmpeg` (required by `yt-dlp` for processing video and audio)
 
 ## Installation
 
-1.  **Clone the repository:**
-    ```bash
-    git clone https://github.com/lordvonko/video-downloader.git
-    cd video-downloader
-    ```
+### Quick Install (Recommended)
 
+Using `pipx` to avoid dependency conflicts:
+
+<<<<<<< HEAD
 2.  **Create and activate a virtual environment (recommended, (do it)):**
     ```bash
     python -m venv venv
@@ -41,37 +52,239 @@ Before running the application, ensure you have the following installed:
     source venv/bin/activate
     ```
 
+<<<<<<< HEAD
 3.  **Install the required Python packages:**
     ```bash
     pip install -r requirements.txt
     ```
+=======
+```bash
+pipx install git+https://github.com/0xshw/video-downloader.git
+```
+
+### Distribution-Specific Installation
+
+For detailed installation instructions for **Arch Linux** and **Gentoo**, see [INSTALL_LINUX.md](INSTALL_LINUX.md).
+
+**Arch Linux:**
+```bash
+sudo pacman -S python python-pip ffmpeg
+pipx install git+https://github.com/0xshw/video-downloader.git
+```
+
+**Gentoo:**
+```bash
+sudo emerge dev-lang/python dev-python/pip media-video/ffmpeg
+pipx install git+https://github.com/0xshw/video-downloader.git
+```
+>>>>>>> 44daad5 (Change video downloader GitHub link in README)
+=======
+```bash
+pipx install git+https://github.com/vonkoTH/video-downloader.git
+```
+>>>>>>> 22c8621 (New version of video-downloader (now it is cli app))
+
+### Distribution-Specific Installation
+
+For detailed installation instructions for **Arch Linux** and **Gentoo**, see [INSTALL_LINUX.md](INSTALL_LINUX.md).
+
+**Arch Linux:**
+```bash
+sudo pacman -S python python-pip ffmpeg
+pipx install git+https://github.com/vonkoTH/video-downloader.git
+```
+
+**Gentoo:**
+```bash
+sudo emerge dev-lang/python dev-python/pip media-video/ffmpeg
+pipx install git+https://github.com/vonkoTH/video-downloader.git
+```
 
 ## Usage
 
-1.  **Run the application:**
+```bash
+video-download [OPTIONS] URL
+```
+
+### Arguments
+
+-   `URL`: The URL of the video to download (required).
+
+### Options
+
+#### Format & Output
+-   `-f`, `--format [video|audio]`: Download format (default: `video`)
+-   `-o`, `--output DIRECTORY`: Output directory (default: `~/Downloads`)
+-   `--audio-quality KBPS`: Audio bitrate in kbps (default: `192`)
+
+#### Authentication (Priority Order)
+-   `-u`, `--username TEXT`: Username for authentication (highest priority)
+-   `-p`, `--password TEXT`: Password for authentication (use with `--username`)
+-   `-s`, `--site TEXT`: Site identifier for stored credentials (e.g., 'youtube', 'tiktok')
+-   `-c`, `--cookies FILE`: Path to browser cookies file (fallback method)
+-   `--no-cookies`: Disable cookie-based authentication entirely
+
+#### Network & Security
+-   `--retries INTEGER`: Maximum retry attempts (default: `3`)
+-   `--timeout INTEGER`: Socket timeout in seconds (default: `30`)
+-   `--no-check-certificate`: Disable SSL verification ⚠️ **insecure, not recommended**
+
+#### Debugging
+-   `-v`, `--verbose`: Enable verbose logging
+-   `--help`: Show help message and exit
+
+### Examples
+
+#### Basic Usage
+
+1.  **Download a video to your Downloads folder:**
+
     ```bash
-    python app.py
+    video-download "https://www.youtube.com/watch?v=DuDX6wNfjqc"
     ```
-  * **ay, no more sites with ads; privacy and speed are better.**
 
+2.  **Download audio only to a specific folder:**
 
-2.  **Paste the URL** of the video you wish to download into the URL entry field.
+    ```bash
+    video-download --format audio --output ~/Music "https://www.youtube.com/watch?v=DuDX6wNfjqc"
+    ```
 
-3.  **Select the desired format** (`Video (MP4)` or `Audio (MP3)`) from the dropdown menu.
+3.  **Download with custom audio quality:**
 
-4.  **(Optional, but recommended) Select a destination folder** by clicking the "Select Folder" button. If no folder is selected, files will be saved to your user's "Downloads" directory by default.
+    ```bash
+    video-download -f audio --audio-quality 320 "https://example.com/video"
+    ```
 
-5.  **Click the "Download" button** to begin the download.
+#### Authentication Methods
 
-### Using Cookies for Authenticated Downloads
+4.  **🆕 Using username and password (recommended):**
 
-Some websites require you to be logged in to access certain content. To download from these sites, you can provide the application with a cookies file from your browser.
+    ```bash
+    video-download --username myuser --password mypass "https://example.com/video"
+    ```
 
-1.  **Export your browser cookies:** You will need to use a browser extension to export your cookies for the relevant website into a standard Netscape format text file (usually a `.txt` file). Common extensions for this are "Get cookies.txt" for BRAVE (use brave privacy is power)  or "cookies.txt" for Firefox (use brave)
+5.  **🆕 Using stored credentials:**
 
-2.  **Load the cookies file:** In the application, click the **"Select Cookies"** button and choose the `.txt` file you exported.
+    ```bash
+    # First time: store credentials (feature planned for CLI in 2.1.0)
+    # For now, use environment variables:
+    export VIDEO_DOWNLOADER_YOUTUBE_USERNAME="myuser"
+    export VIDEO_DOWNLOADER_YOUTUBE_PASSWORD="mypass"
 
-3.  **Download:** Proceed with the download as usual. The application will use the cookies to authenticate with the website.
+    # Then download using stored credentials
+    video-download --site youtube "https://www.youtube.com/watch?v=example"
+    ```
 
+6.  **🆕 Using environment variables:**
 
-## You're welcome.
+    ```bash
+    VIDEO_DOWNLOADER_TIKTOK_USERNAME="user" \
+    VIDEO_DOWNLOADER_TIKTOK_PASSWORD="pass" \
+    video-download --site tiktok "https://www.tiktok.com/@user/video/123"
+    ```
+
+7.  **Using cookies (fallback method):**
+
+    For sites like TikTok that require login, you can use the [Get cookies.txt LOCALLY](https://chromewebstore.google.com/detail/get-cookiestxt-locally/cclelndahbckbenkjhflpdbgdldlbecc) extension to export cookies from just one site.
+
+    ```bash
+    video-download --cookies /path/to/cookies.txt "https://www.tiktok.com/video"
+    ```
+
+8.  **🆕 Download public content without authentication:**
+
+    ```bash
+    video-download --no-cookies "https://www.youtube.com/watch?v=public_video"
+    ```
+
+#### Advanced Options
+
+9.  **🆕 Download with retry and timeout configuration:**
+
+    ```bash
+    video-download --retries 5 --timeout 60 "https://example.com/video"
+    ```
+
+10. **🆕 Verbose mode for debugging:**
+
+    ```bash
+    video-download --verbose "https://example.com/video"
+    ```
+
+## Authentication Priority
+
+The tool uses authentication methods in this priority order:
+
+1. **Direct credentials** (`--username` and `--password`) - Highest priority
+2. **Stored credentials** (`--site` with stored credentials or environment variables)
+3. **Browser cookies** (`--cookies` file)
+4. **No authentication** (public content only)
+
+## Security Best Practices
+
+✅ **Recommended:**
+- Use `--username`/`--password` for direct authentication
+- Store credentials in environment variables for automation
+- Keep SSL verification enabled (default)
+
+⚠️ **Not Recommended:**
+- Using `--no-check-certificate` (disables SSL security)
+- Storing passwords in shell history (use environment variables instead)
+- Sharing cookie files (contains session data)
+
+## Troubleshooting
+
+### "ffmpeg not found"
+
+Install ffmpeg for your distribution:
+
+```bash
+# Arch Linux
+sudo pacman -S ffmpeg
+
+# Gentoo
+sudo emerge media-video/ffmpeg
+```
+
+### "command not found: video-download"
+
+Add `~/.local/bin` to your PATH:
+
+```bash
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+```
+
+### SSL Certificate Errors
+
+Only use `--no-check-certificate` as a last resort. Instead, update your CA certificates:
+
+```bash
+# Arch Linux
+sudo pacman -S ca-certificates
+
+# Gentoo
+sudo emerge app-misc/ca-certificates
+sudo update-ca-certificates
+```
+
+For more troubleshooting, see [INSTALL_LINUX.md](INSTALL_LINUX.md).
+
+## What's New in 2.0.0
+
+🔒 **Security:** SSL verification enabled by default, cookie-free authentication
+🎯 **Reliability:** Retry logic, timeout control, dependency verification
+🐛 **Error Handling:** Specific error types with helpful messages
+📊 **Logging:** Verbose mode with debug output
+⚙️ **Flexibility:** Configurable audio quality, retries, and timeouts
+🐧 **Linux Support:** Verified on Arch Linux and Gentoo
+
+See [CHANGELOG.md](CHANGELOG.md) for detailed changes.
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit issues or pull requests.
+
+## License
+
+This project is licensed under the MIT License.
